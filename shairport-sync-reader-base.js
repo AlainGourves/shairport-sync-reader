@@ -1,13 +1,13 @@
 const EventEmitter = require('events');
 const parser = require('daap-parser');
 
-const sampling = 44100;
 const remoteProps = {
 	daid: 'DACP-ID',
 	acre: 'Active-Remote',
 	snam: 'X-Apple-Client-Name',
 	snua: 'User-Agent',
-	clip: 'Client-IP'
+	clip: 'Client-IP',
+	dapo: 'Port',
 };
 const prgr = ['start', 'current', 'end'];
 
@@ -31,13 +31,13 @@ class ShairportSyncReader extends EventEmitter {
 	_preparseData(code, cont) {
 		switch (code) {
 			case 'prgr':
-				cont = objectify(cont, '/', x => parseInt(x, 10)/sampling, ['start', 'current', 'end']);
-				prgr.each(key => cont[key] -= cont[prgr[0]]);
+				cont = objectify(cont, '/', x => parseInt(x, 10), ['start', 'current', 'end']);
 				break;
 			case 'pvol':
 				cont = objectify(cont, ',', parseFloat, ['airplay', 'volume', 'lowest', 'highest']);
 				break;
 			case 'pbeg':
+			case 'dapo':
 				cont = this._remote;
 				break;
 			case 'pend':
@@ -53,12 +53,15 @@ class ShairportSyncReader extends EventEmitter {
 				data.cont = data.cont.toString();
 			}
 
+			if (remoteProps[data.code]) {
+				this._remote[remoteProps[data.code]] = data.cont;
+				if (data.code !== 'dapo') {
+					return;
+				}
+			}
+
 			// preparse data
 			data.cont = this._preparseData(data.code, data.cont);
-
-			if (remoteProps[data.code]) {
-				return this._remote[remoteProps[data.code]] = data.cont;
-			}
 
 			// use data
 			switch (data.code) {
@@ -77,6 +80,9 @@ class ShairportSyncReader extends EventEmitter {
 					break;
 				case 'stal':
 					this.emit('error', data.code);
+					break;
+				case 'dapo':
+					this.emit('client', data.cont);
 					break;
 				case 'PICT':
 					if (this._rtptime.pict === this._rtptime.meta && data.cont.length) {
