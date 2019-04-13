@@ -20,7 +20,7 @@ Déclenché dès que la lecture normale est interrompue : après Pause/Stop mais
 
 Objet retourné de la forme :
 
-```json
+```javascript
 {
 	start: t1,
 	current: t2,
@@ -29,4 +29,7 @@ Objet retourné de la forme :
 ```
 Avec `t1`, `t2`, et `t3` qui sont des timestamp RTP. L'unité est le frame, 1/44100 seconde (1/fréquence d'échantillonage). Apparemment (pas sûr),l'origine est le début du stream (event `pbeg `).
 
-La durée d'un morceau en secondes est $$(prgr.end - prgr.start)/44100$$
+- La durée d'un morceau en secondes = `(prgr.end - prgr.start)/44100`
+- Temps écoulé = `(prgr.current - prgr.start)/44100`
+
+__NB_ `meta.astm` donne aussi la durée d'un morceau en secondes.
