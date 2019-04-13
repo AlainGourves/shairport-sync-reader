@@ -32,4 +32,5 @@ Avec `t1`, `t2`, et `t3` qui sont des timestamp RTP. L'unité est le frame, 1/44
 - La durée d'un morceau en secondes = `(prgr.end - prgr.start)/44100`
 - Temps écoulé = `(prgr.current - prgr.start)/44100`
 
-__NB_ `meta.astm` donne aussi la durée d'un morceau en secondes.
+
+__NB___ `meta.astm` donne aussi la durée d'un morceau en secondes.
