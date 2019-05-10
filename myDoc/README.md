@@ -5,6 +5,7 @@ Returned object is an event emitter with following events:
 event | description | data
 ----- | ----------- | ----
 pfls | play stream flush | -
+pend | play stream end | -
 prgr | progress, in second | ```{ start: 0, current: 17, end: 42 }```
 pvol | play volume | -
 meta | metadata | all metadata send between `mdst` and `mden`, parsed
@@ -16,6 +17,10 @@ error | when `snal` occurs | -
 Déclenché dès que la lecture normale est interrompue : après Pause/Stop mais aussi après un déplacement dans le morceau.
 
 The `FLUSH` request stops the streaming. [_Unofficial AirPlay Protocol Specification_](http://nto.github.io/AirPlay.html#audio-rtsprequests)
+
+## `pend`
+
+Déclenché quelqes secondes après la fin de la lecture dans iTunes.
 
 ## `prgr`
 
